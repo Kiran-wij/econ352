@@ -20,3 +20,9 @@ tax_rate_merged <- read_csv("~/Econ 352/HW2/tax_rate_merged.csv")
 forbes400 <- 
 ```
 
+```{r data-thom, include=FALSE}
+top_rates <- read_csv("~/HW2/toprates_77_18.csv")
+tax_rate_merged <- read_csv("~/HW2/tax_rate_merged.csv")
+forbes400 <- read_csv("~/HW2/forbes400.csv")
+```
+

@@ -17,5 +17,6 @@ library(tidyverse)
 ```{r data, include=FALSE}
 top_rates <- read_csv("~/Econ 352/HW2/toprates_77_18.csv")
 tax_rate_merged <- read_csv("~/Econ 352/HW2/tax_rate_merged.csv")
+forbes400 <- 
 ```
 

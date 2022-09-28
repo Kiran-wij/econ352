@@ -86,13 +86,47 @@ group_t
 
 ```{r 1-3}
 tax_rate_merged %>%
-  filter(state_full %in% group_c$state_full) %>%
+  filter(state_full %in% group_c$state_full & year == 2016) %>%
   summarize(mean(millionaire_share))
 
 tax_rate_merged %>%
-  filter(state_full %in% group_t$state_full) %>%
+  filter(state_full %in% group_t$state_full & year == 2016) %>%
   summarize(mean(millionaire_share))
 ```
+
+
+```{r 1-4}
+rate_changes <- tax_rate_merged %>%
+  filter(year == 2001 | year == 2016) %>%
+  select(state_full, topstaterate, year) %>%
+  group_by(state_full) %>%
+  pivot_wider(id_cols = state_full, names_from = year, 
+              values_from = c(topstaterate)) %>%
+  rename("rate_2001" = 2) %>%
+  rename("rate_2016" = 3) %>%
+  mutate(diff = rate_2016 - rate_2001) %>%
+  mutate(diff_pct = (rate_2016 - rate_2001)/rate_2001 * 100) %>%
+  replace(is.na(.), 0)
+
+group_tt <- rate_changes %>%
+  arrange(diff)  %>%
+  head(10)
+
+group_cc <- rate_changes %>%
+  arrange(desc(diff))  %>%
+  head(10)
+
+group_tt
+group_cc
+
+
+```
+
+group_cc <- group_cc %>%
+  mutate(rate_01 = tax_rate_merged$topstaterate if year == 2001)
+
+group_cc
+
 
 *Question 2*
 

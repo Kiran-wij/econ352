@@ -26,3 +26,71 @@ tax_rate_merged <- read_csv("~/HW2/tax_rate_merged.csv")
 forbes400 <- read_csv("~/HW2/forbes400.csv")
 ```
 
+*Question 1*
+
+The goal of this exercise is to estimate the mobility of high income US taxpayers across
+US states due to variation in state income top tax rates across states and over time. High income US
+taxpayers are defined as tax filers reporting Adjusted Gross Income (AGI) above $1m amongst all the
+other millionaires in a given year (add up all the millionaires in all the states + DC in a given year and
+compute the share in each state in a given year).
+
+1. The file toprates 77 18.csv documents the top state and federal income tax rate each year from
+1977-2018. Plot the the mean and median top state and federal tax rate across states is over the
+time-period 1977-2018. Are top rates trending upward or downward?
+
+```{r question1-1}
+means_and_medians <- top_rates %>% 
+  group_by(year) %>% 
+  summarize(mean_federal=mean(topfederalrate),
+            mean_state=mean(topstaterate),
+            median_federal=median(topfederalrate),
+            median_state=median(topstaterate))
+
+#Might have to filter out FEDERAL rows when calculating state means and medians...
+
+means_and_medians
+
+ggplot(data = means_and_medians) + geom_point(aes(x = year, y = mean_federal)) +
+ geom_smooth(aes(x = year, y = mean_federal), method = "lm", se = F)
+
+ggplot(data = means_and_medians) + geom_point(aes(x = year, y = median_federal)) +
+ geom_smooth(aes(x = year, y = median_federal), method = "lm", se = F)
+
+ggplot(data = means_and_medians) + geom_point(aes(x = year, y = mean_state)) +
+ geom_smooth(aes(x = year, y = mean_state), method = "lm", se = F)
+
+ggplot(data = means_and_medians) + geom_point(aes(x = year, y = median_state)) +
+ geom_smooth(aes(x = year, y = median_state), method = "lm", se = F)
+
+```
+
+
+*Question 2*
+
+The dataset forbes400.csv gives the list of the wealth of individuals in Forbes 400 in 2017.
+
+1. Plot the number of individuals above a certain networth n as a function of networth n in a log-log
+scale. That is, plot log(Number of Individuals Above n) as a function of log(n).
+
+```{r question2-1}
+# forbes400 %>%
+#   group_by(networth) %>% 
+#   summarise(cnt = count(networth))
+
+glimpse(forbes400)
+
+# ggplot(df, aes(x=x, y=y)) +
+#   geom_point() +
+#   scale_y_continuous(trans='log10') +
+#   scale_x_continuous(trans='log10')
+
+
+```
+
+2. As we discussed in class, the fact that this plot has linear slope in log-log space means that the wealth
+distribution is Pareto, and that the slope of the plot equals −ζ, where ζ is the power law exponent
+of the distribution. Based on your plot, what is the power law exponent of the wealth distribution
+in 2017?
+
+3. What does it’s magnitude imply for the magnitude of wealth inequality in the U.S. (hint: look at
+the lecture notes for Lecture 9)

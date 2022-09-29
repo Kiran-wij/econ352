@@ -156,9 +156,9 @@ scale. That is, plot log(Number of Individuals Above n) as a function of log(n).
 
 ```{r question2-1}
 question_2_1 <- forbes400 %>%
-  mutate(num_richer = 400 - row_number(),
-         log_num_richer = log10(num_richer),
-         log_networth = log10(networth))
+  mutate(num_richer = 401 - row_number(),
+         log_num_richer = log(num_richer),
+         log_networth = log(networth))
 
 ggplot(question_2_1, aes(x=log_networth, y=log_num_richer)) +
   geom_point() +
@@ -174,8 +174,10 @@ in 2017?
 
 ```{r question 2-2}
 
-```
+lm(log_num_richer~log_networth, data=question_2_1)
 
+```
+Based on our plot, the power law exponent  of the wealth distribution in 2017 is 1.335.
 
 3. What does it’s magnitude imply for the magnitude of wealth inequality in the U.S. (hint: look at
 the lecture notes for Lecture 9)

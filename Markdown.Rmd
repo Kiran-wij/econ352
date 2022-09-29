@@ -166,6 +166,26 @@ tax_rate_merged %>%
   mutate(diff = mshare_16 - mshare_01, diff_pct = (mshare_16 - mshare_01) / mshare_01)
 
 ```
+```{r 1-6}
+nc_wi <- tax_rate_merged %>%
+  filter(state == "NC" | state == "WI") %>%
+  filter(year <= 2016 & year >= 2010)
+
+ggplot(data = nc_wi) + geom_line(aes(x = year, y = topstaterate, group = state_full,
+                                      color = state_full)) +
+  labs(title = "Top State Tax Rate (2010-2016)",
+      x = "Year",
+      y = "Top State Tax Rate")
+
+ggplot(data = nc_wi) + geom_line(aes(x = year, y = millionaire_share, group = state_full,
+                                      color = state_full)) +
+  labs(title = "Millionaire Share by State (2010-2016)",
+      x = "Year",
+      y = "Fraction of Nationwide Tax Filers with $1m+ AGI in State")
+
+```
+
+
 
 
 *Question 2*

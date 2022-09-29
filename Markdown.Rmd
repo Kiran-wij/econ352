@@ -89,11 +89,11 @@ group_c
 ```{r 1-3}
 tax_rate_merged %>%
   filter(state_full %in% group_t$state_full & year == 2016) %>%
-  summarize(sum(millionaire_share))
+  summarize(mean(millionaire_share))
 
 tax_rate_merged %>%
   filter(state_full %in% group_c$state_full & year == 2016) %>%
-  summarize(sum(millionaire_share))
+  summarize(mean(millionaire_share))
 ```
 
 
@@ -132,7 +132,6 @@ mean(group_cc$diff_pct)
 compare the changes in the fraction of high income earners in states in group TT and states in group CC from 2001 to 2016 in absolute terms and in percentage terms for both groups. Fraction high earners is again defined as the ratio of tax returns with AGI above $1m to all tax returns amongst all the other millionaires in a given year. The relevant variable is called ”millionaire share”. Describe what you find? Are you surprised? 
 
 ```{r 1-5}
-#tt
 tax_rate_merged %>%
   filter(state_full %in% group_tt$state_full) %>%
   filter(year == 2001 | year == 2016) %>%
@@ -142,27 +141,9 @@ tax_rate_merged %>%
               values_from = c(millionaire_share)) %>%
   rename("mshare_2001" = 2) %>%
   rename("mshare_2016" = 3) %>%
-  summarize(mshare_01 = sum(mshare_2001), mshare_16 = sum(mshare_2016)) %>%
-  mutate(diff = mshare_16 - mshare_01, diff_pct = (mshare_16 - mshare_01) / mshare_01 * 100)
-
-#cc
-tax_rate_merged %>%
-  filter(state_full %in% group_cc$state_full) %>%
-  filter(year == 2001 | year == 2016) %>%
-  group_by(year) %>%
-  select(state_full, year, millionaire_share) %>%
-  pivot_wider(id_cols = state_full, names_from = year, 
-              values_from = c(millionaire_share)) %>%
-  rename("mshare_2001" = 2) %>%
-  rename("mshare_2016" = 3) %>%
-  summarize(mshare_01 = sum(mshare_2001), mshare_16 = sum(mshare_2016)) %>%
-  mutate(diff = mshare_16 - mshare_01, diff_pct = (mshare_16 - mshare_01) / mshare_01 * 100)
-```
-```{r test}
-tax_rate_merged %>%
-  filter(year == 2016) %>%
-  summarize(sum(millionaire_share))
-
+  mutate(diff = mshare_2016 - mshare_2001) %>%
+  mutate(diff_pct = (mshare_2016 - mshare_2001)/mshare_2001 * 100)
+  
 ```
 
 
@@ -174,16 +155,14 @@ The dataset forbes400.csv gives the list of the wealth of individuals in Forbes 
 scale. That is, plot log(Number of Individuals Above n) as a function of log(n).
 
 ```{r question2-1}
-# forbes400 %>%
-#   group_by(networth) %>% 
-#   summarise(cnt = count(networth))
+question_2_1 <- forbes400 %>%
+  mutate(num_richer = 400 - row_number(),
+         log_num_richer = log10(num_richer),
+         log_networth = log10(networth))
 
-glimpse(forbes400)
-
-# ggplot(df, aes(x=x, y=y)) +
-#   geom_point() +
-#   scale_y_continuous(trans='log10') +
-#   scale_x_continuous(trans='log10')
+ggplot(question_2_1, aes(x=log_networth, y=log_num_richer)) +
+  geom_point() +
+  geom_smooth(aes(x = log_networth, y = log_num_richer), method = "lm", se = F)
 
 
 ```
@@ -192,6 +171,11 @@ glimpse(forbes400)
 distribution is Pareto, and that the slope of the plot equals −ζ, where ζ is the power law exponent
 of the distribution. Based on your plot, what is the power law exponent of the wealth distribution
 in 2017?
+
+```{r question 2-2}
+
+```
+
 
 3. What does it’s magnitude imply for the magnitude of wealth inequality in the U.S. (hint: look at
 the lecture notes for Lecture 9)

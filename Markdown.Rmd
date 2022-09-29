@@ -177,7 +177,9 @@ in 2017?
 lm(log_num_richer~log_networth, data=question_2_1)
 
 ```
-Based on our plot, the power law exponent  of the wealth distribution in 2017 is 1.335.
+Based on our plot, the power law exponent of the wealth distribution in 2017 is 1.335.
 
 3. What does it’s magnitude imply for the magnitude of wealth inequality in the U.S. (hint: look at
 the lecture notes for Lecture 9)
+
+The magnitude of the exponent implies that in the US in 2017, the top 0.01% was about 1.34 times richer than the top 0.1%, which is 1.34 times richer than the top 1%, and so on.

@@ -89,11 +89,11 @@ group_c
 ```{r 1-3}
 tax_rate_merged %>%
   filter(state_full %in% group_t$state_full & year == 2016) %>%
-  summarize(mean(millionaire_share))
+  summarize(sum(millionaire_share))
 
 tax_rate_merged %>%
   filter(state_full %in% group_c$state_full & year == 2016) %>%
-  summarize(mean(millionaire_share))
+  summarize(sum(millionaire_share))
 ```
 
 
@@ -132,6 +132,7 @@ mean(group_cc$diff_pct)
 compare the changes in the fraction of high income earners in states in group TT and states in group CC from 2001 to 2016 in absolute terms and in percentage terms for both groups. Fraction high earners is again defined as the ratio of tax returns with AGI above $1m to all tax returns amongst all the other millionaires in a given year. The relevant variable is called ”millionaire share”. Describe what you find? Are you surprised? 
 
 ```{r 1-5}
+#tt
 tax_rate_merged %>%
   filter(state_full %in% group_tt$state_full) %>%
   filter(year == 2001 | year == 2016) %>%
@@ -141,9 +142,27 @@ tax_rate_merged %>%
               values_from = c(millionaire_share)) %>%
   rename("mshare_2001" = 2) %>%
   rename("mshare_2016" = 3) %>%
-  mutate(diff = mshare_2016 - mshare_2001) %>%
-  mutate(diff_pct = (mshare_2016 - mshare_2001)/mshare_2001 * 100)
-  
+  summarize(mshare_01 = sum(mshare_2001), mshare_16 = sum(mshare_2016)) %>%
+  mutate(diff = mshare_16 - mshare_01, diff_pct = (mshare_16 - mshare_01) / mshare_01 * 100)
+
+#cc
+tax_rate_merged %>%
+  filter(state_full %in% group_cc$state_full) %>%
+  filter(year == 2001 | year == 2016) %>%
+  group_by(year) %>%
+  select(state_full, year, millionaire_share) %>%
+  pivot_wider(id_cols = state_full, names_from = year, 
+              values_from = c(millionaire_share)) %>%
+  rename("mshare_2001" = 2) %>%
+  rename("mshare_2016" = 3) %>%
+  summarize(mshare_01 = sum(mshare_2001), mshare_16 = sum(mshare_2016)) %>%
+  mutate(diff = mshare_16 - mshare_01, diff_pct = (mshare_16 - mshare_01) / mshare_01 * 100)
+```
+```{r test}
+tax_rate_merged %>%
+  filter(year == 2016) %>%
+  summarize(sum(millionaire_share))
+
 ```
 
 

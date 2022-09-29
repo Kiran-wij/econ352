@@ -164,6 +164,7 @@ tax_rate_merged %>%
   rename("mshare_2016" = 3) %>%
   summarize(mshare_01 = sum(mshare_2001), mshare_16 = sum(mshare_2016)) %>%
   mutate(diff = mshare_16 - mshare_01, diff_pct = (mshare_16 - mshare_01) / mshare_01)
+
 ```
 
 

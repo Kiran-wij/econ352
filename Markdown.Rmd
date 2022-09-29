@@ -39,31 +39,31 @@ compute the share in each state in a given year).
 time-period 1977-2018. Are top rates trending upward or downward?
 
 ```{r question1-1}
-means_and_medians <- top_rates %>% 
+means_and_median_federal <- top_rates %>% 
+  filter(state_full == "FEDERAL") %>% 
   group_by(year) %>% 
-  summarize(mean_federal=mean(topfederalrate),
-            mean_state=mean(topstaterate),
-            median_federal=median(topfederalrate),
+  summarize(mean_federal=mean(topfederalrate))
+  
+means_and_median_state <- top_rates %>% 
+  filter(state_full != "FEDERAL") %>% 
+  group_by(year) %>% 
+  summarize(mean_state=mean(topstaterate),
             median_state=median(topstaterate))
 
-#Might have to filter out FEDERAL rows when calculating state means and medians...
-
-means_and_medians
-
-ggplot(data = means_and_medians) + geom_point(aes(x = year, y = mean_federal)) +
+ggplot(data = means_and_median_federal) + geom_point(aes(x = year, y = mean_federal)) +
  geom_smooth(aes(x = year, y = mean_federal), method = "lm", se = F)
 
-ggplot(data = means_and_medians) + geom_point(aes(x = year, y = median_federal)) +
- geom_smooth(aes(x = year, y = median_federal), method = "lm", se = F)
+ggplot(data = means_and_median_state) + 
+  geom_point(aes(x = year, y = mean_state)) +
+  geom_smooth(aes(x = year, y = mean_state), method = "lm", se = F)
 
-ggplot(data = means_and_medians) + geom_point(aes(x = year, y = mean_state)) +
- geom_smooth(aes(x = year, y = mean_state), method = "lm", se = F)
+ggplot(data = means_and_median_state) + 
+  geom_point(aes(x = year, y = median_state)) +
+  geom_smooth(aes(x = year, y = median_state), method = "lm", se = F)
 
-ggplot(data = means_and_medians) + geom_point(aes(x = year, y = median_state)) +
- geom_smooth(aes(x = year, y = median_state), method = "lm", se = F)
 
 ```
-
+Top federal rates have trended down, as have the mean top state rates, but the median top state rates have increased.
 
 
 ```{r 1-2}

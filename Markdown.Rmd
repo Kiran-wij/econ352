@@ -141,9 +141,20 @@ tax_rate_merged %>%
               values_from = c(millionaire_share)) %>%
   rename("mshare_2001" = 2) %>%
   rename("mshare_2016" = 3) %>%
-  mutate(diff = mshare_2016 - mshare_2001) %>%
-  mutate(diff_pct = (mshare_2016 - mshare_2001)/mshare_2001 * 100)
-  
+  summarize(mshare_01 = sum(mshare_2001), mshare_16 = sum(mshare_2016)) %>%
+  mutate(diff = mshare_16 - mshare_01, diff_pct = (mshare_16 - mshare_01) / mshare_01)
+
+tax_rate_merged %>%
+  filter(state_full %in% group_cc$state_full) %>%
+  filter(year == 2001 | year == 2016) %>%
+  group_by(year) %>%
+  select(state_full, year, millionaire_share) %>%
+  pivot_wider(id_cols = state_full, names_from = year, 
+              values_from = c(millionaire_share)) %>%
+  rename("mshare_2001" = 2) %>%
+  rename("mshare_2016" = 3) %>%
+  summarize(mshare_01 = sum(mshare_2001), mshare_16 = sum(mshare_2016)) %>%
+  mutate(diff = mshare_16 - mshare_01, diff_pct = (mshare_16 - mshare_01) / mshare_01)
 ```
 
 
@@ -156,9 +167,9 @@ scale. That is, plot log(Number of Individuals Above n) as a function of log(n).
 
 ```{r question2-1}
 question_2_1 <- forbes400 %>%
-  mutate(num_richer = 401 - row_number(),
-         log_num_richer = log(num_richer),
-         log_networth = log(networth))
+  mutate(num_richer = 400 - row_number(),
+         log_num_richer = log10(num_richer),
+         log_networth = log10(networth))
 
 ggplot(question_2_1, aes(x=log_networth, y=log_num_richer)) +
   geom_point() +
@@ -174,12 +185,8 @@ in 2017?
 
 ```{r question 2-2}
 
-lm(log_num_richer~log_networth, data=question_2_1)
-
 ```
-Based on our plot, the power law exponent of the wealth distribution in 2017 is 1.335.
+
 
 3. What does it’s magnitude imply for the magnitude of wealth inequality in the U.S. (hint: look at
 the lecture notes for Lecture 9)
-
-The magnitude of the exponent implies that in the US in 2017, the top 0.01% was about 1.34 times richer than the top 0.1%, which is 1.34 times richer than the top 1%, and so on. *DOUBLE CHECK*

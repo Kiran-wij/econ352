@@ -51,15 +51,24 @@ means_and_median_state <- top_rates %>%
             median_state=median(topstaterate))
 
 ggplot(data = means_and_median_federal) + geom_point(aes(x = year, y = mean_federal)) +
- geom_smooth(aes(x = year, y = mean_federal), method = "lm", se = F)
+ geom_smooth(aes(x = year, y = mean_federal), method = "lm", se = F) +
+ labs(title = "Top Federal Tax Rate (1977-2018)",
+      x = "Year",
+      y = "Top Federal Tax Rate")
 
 ggplot(data = means_and_median_state) + 
   geom_point(aes(x = year, y = mean_state)) +
-  geom_smooth(aes(x = year, y = mean_state), method = "lm", se = F)
+  geom_smooth(aes(x = year, y = mean_state), method = "lm", se = F) +
+  labs(title = "Mean Top State Tax Rate (1977-2018)",
+       x = "Year",
+       y = "Mean Top State Tax Rate")
 
 ggplot(data = means_and_median_state) + 
   geom_point(aes(x = year, y = median_state)) +
-  geom_smooth(aes(x = year, y = median_state), method = "lm", se = F)
+  geom_smooth(aes(x = year, y = median_state), method = "lm", se = F) +
+  labs(title = "Median Top State Tax Rate (1977-2018)",
+       x = "Year",
+       y = "Median Top State Tax Rate")
 
 
 ```

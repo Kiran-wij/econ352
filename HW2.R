@@ -1,49 +1,16 @@
----
-title: "Markdown"
-output: pdf_document
-date: "2022-09-27"
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-
-```{r libraries, include=FALSE}
 library(tidyverse)
-```
 
-
-```{r data-kiran, include=FALSE}
-# top_rates <- read_csv("~/Econ 352/HW2/toprates_77_18.csv")
-# tax_rate_merged <- read_csv("~/Econ 352/HW2/tax_rate_merged.csv")
-# forbes400 <- read_csv("~/Econ 352/HW2/forbes400.csv")
-```
-
-```{r data-thom, include=FALSE}
 top_rates <- read_csv("~/HW2/toprates_77_18.csv")
 tax_rate_merged <- read_csv("~/HW2/tax_rate_merged.csv")
 forbes400 <- read_csv("~/HW2/forbes400.csv")
-```
 
-*Question 1*
+#Question 1.1
 
-The goal of this exercise is to estimate the mobility of high income US taxpayers across
-US states due to variation in state income top tax rates across states and over time. High income US
-taxpayers are defined as tax filers reporting Adjusted Gross Income (AGI) above $1m amongst all the
-other millionaires in a given year (add up all the millionaires in all the states + DC in a given year and
-compute the share in each state in a given year).
-
-1. The file toprates 77 18.csv documents the top state and federal income tax rate each year from
-1977-2018. Plot the the mean and median top state and federal tax rate across states is over the
-time-period 1977-2018. Are top rates trending upward or downward?
-
-```{r question1-1}
 means_and_median_federal <- top_rates %>% 
   filter(state_full == "FEDERAL") %>% 
   group_by(year) %>% 
   summarize(mean_federal=mean(topfederalrate))
-  
+
 means_and_median_state <- top_rates %>% 
   filter(state_full != "FEDERAL") %>% 
   group_by(year) %>% 
@@ -51,10 +18,10 @@ means_and_median_state <- top_rates %>%
             median_state=median(topstaterate))
 
 ggplot(data = means_and_median_federal) + geom_point(aes(x = year, y = mean_federal)) +
- geom_smooth(aes(x = year, y = mean_federal), method = "lm", se = F) +
- labs(title = "Top Federal Tax Rate (1977-2018)",
-      x = "Year",
-      y = "Top Federal Tax Rate")
+  geom_smooth(aes(x = year, y = mean_federal), method = "lm", se = F) +
+  labs(title = "Top Federal Tax Rate (1977-2018)",
+       x = "Year",
+       y = "Top Federal Tax Rate")
 
 ggplot(data = means_and_median_state) + 
   geom_point(aes(x = year, y = mean_state)) +
@@ -70,12 +37,8 @@ ggplot(data = means_and_median_state) +
        x = "Year",
        y = "Median Top State Tax Rate")
 
+#Question 1.2
 
-```
-Top federal rates have trended down, as have the mean top state rates, but the median top state rates have increased.
-
-
-```{r 1-2}
 group_t <- top_rates %>%
   filter(year == 2016) %>%
   filter(state_full != "FEDERAL") %>%
@@ -92,10 +55,9 @@ group_c <- top_rates %>%
 
 group_t
 group_c
-```
 
+#Question 1.3
 
-```{r 1-3}
 tax_rate_merged %>%
   filter(state_full %in% group_t$state_full & year == 2016) %>%
   summarize(mean(millionaire_share))
@@ -103,10 +65,9 @@ tax_rate_merged %>%
 tax_rate_merged %>%
   filter(state_full %in% group_c$state_full & year == 2016) %>%
   summarize(mean(millionaire_share))
-```
 
+#Question 1.4
 
-```{r 1-4}
 changes_temp <- tax_rate_merged %>%
   filter(year == 2001 | year == 2016) %>%
   select(state_full, topstaterate, year) %>%
@@ -135,10 +96,9 @@ mean(group_tt$diff_pct)
 
 mean(group_cc$diff)
 mean(group_cc$diff_pct)
-  
-```
 
-```{r 1-5}
+#Question 1.5
+
 tax_rate_merged %>%
   filter(state_full %in% group_tt$state_full) %>%
   filter(year == 2001 | year == 2016) %>%
@@ -163,28 +123,23 @@ tax_rate_merged %>%
   summarize(mshare_01 = sum(mshare_2001), mshare_16 = sum(mshare_2016)) %>%
   mutate(diff = mshare_16 - mshare_01, diff_pct = (mshare_16 - mshare_01) / mshare_01)
 
-```
+#Question 1.6
 
-```{r 1-6}
 nc_wi <- tax_rate_merged %>%
   filter(state == "NC" | state == "WI") %>%
   filter(year <= 2016 & year >= 2010)
 
 ggplot(data = nc_wi) + geom_line(aes(x = year, y = topstaterate, group = state_full,
-                                      color = state_full)) +
+                                     color = state_full)) +
   labs(title = "Top State Tax Rate (2010-2016)",
-      x = "Year",
-      y = "Top State Tax Rate")
+       x = "Year",
+       y = "Top State Tax Rate")
 
 ggplot(data = nc_wi) + geom_line(aes(x = year, y = millionaire_share, group = state_full,
-                                      color = state_full)) +
+                                     color = state_full)) +
   labs(title = "Millionaire Share by State (2010-2016)",
-      x = "Year",
-      y = "Fraction of Nationwide Tax Filers with $1m+ AGI in State")
-
-```
-
-``` {r 1-6-cont}
+       x = "Year",
+       y = "Fraction of Nationwide Tax Filers with $1m+ AGI in State")
 
 question_1_6 <- nc_wi %>% 
   filter(year != 2013) %>% 
@@ -196,17 +151,8 @@ question_1_6 %>%
   group_by(state, control_years) %>% 
   summarize(avg_million_share = mean(millionaire_share))
 
-```
+#Question 2.1
 
-
-*Question 2*
-
-The dataset forbes400.csv gives the list of the wealth of individuals in Forbes 400 in 2017.
-
-1. Plot the number of individuals above a certain networth n as a function of networth n in a log-log
-scale. That is, plot log(Number of Individuals Above n) as a function of log(n).
-
-```{r question2-1}
 question_2_1 <- forbes400 %>%
   mutate(num_richer = 401 - row_number(),
          log_num_richer = log(num_richer),
@@ -216,31 +162,10 @@ ggplot(question_2_1, aes(x=log_networth, y=log_num_richer)) +
   geom_point() +
   geom_smooth(aes(x = log_networth, y = log_num_richer), method = "lm", se = F)
 
-
-```
-
-2. As we discussed in class, the fact that this plot has linear slope in log-log space means that the wealth
-distribution is Pareto, and that the slope of the plot equals negative xi, where xi is the power law exponent
-of the distribution. Based on your plot, what is the power law exponent of the wealth distribution
-in 2017?
-
-```{r question 2-2}
+#Question 2.2
 
 lm(log_networth~log_num_richer, data=question_2_1)
 
-```
-
-3. What does it’s magnitude imply for the magnitude of wealth inequality in the U.S. (hint: look at
-the lecture notes for Lecture 9)
-
-```{r question 2-3}
+#Question 2.3
 
 0.7408/(1 - 0.7408)
-
-```
-
-Beta = xi/(1 - xi)
-
-
-
-

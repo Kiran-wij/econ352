@@ -29,3 +29,7 @@ loans <- merge(loans, limits,by="year")
 ```
 
 
+```{r q_4}
+loans <- loans %>%
+  mutate(deviation = log(original_balance) - log(conformingloanlimit))
+```

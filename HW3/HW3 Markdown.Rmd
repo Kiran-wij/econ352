@@ -45,7 +45,9 @@ loans <- loans %>%
 
 ```{r q_5}
 bins <- loans %>%
-  mutate(lower_bound = (deviation*200000) %/% 1000)
+  mutate(lower_bound = (deviation*200000) %/% 1000) %>%
+  filter(abs(lower_bound) < 100)
+
 
 ```
 
@@ -57,10 +59,11 @@ total <- as.integer(count(loans))
 
 bin_share <- bins %>%
   group_by(lower_bound) %>%
-  summarize(share = n()/total, mean = mean(initial_interest_rate)) %>%
-  filter(abs(lower_bound) < 100)
+  summarize(share = n()/total, mean = mean(initial_interest_rate, na.rm = TRUE))
+  
 
 ```
+
 
 ```{r q_6a}
 ggplot(data = bins, aes(x=lower_bound)) +

@@ -1,0 +1,18 @@
+---
+title: "HW3 Markdown"
+output: beamer_presentation
+date: "2022-11-01"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+```
+
+```{r}
+conformingloanlimits <- read_csv("~/Econ 352 HW/HW3/conformingloanlimits.csv")
+all_llma_nc <- read_csv("~/Econ 352 HW/HW3/all_llma_nc.csv")
+
+
+```
+

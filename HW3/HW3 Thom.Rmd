@@ -11,8 +11,25 @@ library(tidyverse)
 
 ```{r}
 conformingloanlimits <- read_csv("~/Econ 352 HW/HW3/conformingloanlimits.csv")
+```
+
+
+```{r}
 all_llma_nc <- read_csv("~/Econ 352 HW/HW3/all_llma_nc.csv")
 
+```
+
+```{r 1-2}
+
+mortgages <- all_llma_nc %>% 
+  filter(year >= 1992 & year <= 2007,
+         product_type == 10,
+         original_term == 360 | original_term == 180,
+         loan_type == 1,
+         loan_purpose %in% c(1, 2, 3, 5)
+         )
+
+head(mortgages)
 
 ```
 

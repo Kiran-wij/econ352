@@ -19,8 +19,17 @@ limits <- read_csv("~/Econ 352/HW2/HW3/conformingloanlimits.csv")
 ```
 
 ```{r q_1}
-sapply(loans, typeof)
+sapply(loans, class)
 
+```
+```{r q_2}
+loans <- loans %>% 
+ filter(year >= 1992 & year <= 2007,
+         product_type == 10,
+         original_term == 360 | original_term == 180,
+         loan_type == 1,
+         loan_purpose %in% c(1, 2, 3, 5)
+         )
 ```
 
 
@@ -32,4 +41,31 @@ loans <- merge(loans, limits,by="year")
 ```{r q_4}
 loans <- loans %>%
   mutate(deviation = log(original_balance) - log(conformingloanlimit))
+```
+
+```{r q_5}
+bins <- loans %>% 
+  mutate(deviation_bin = cut(deviation, breaks=200))
+
+bins <- bins %>%
+  filter(deviation < 0.5) %>%
+  filter(deviation > -0.5)
+  
+
+
+```
+
+```{r q_6}
+total <- count(bins)
+
+bin_share <- bins %>%
+  group_by(deviation_bin) %>%
+  summarize(share = n())
+
+```
+
+```{r q_6}
+ggplot(data = bins, aes(x=deviation_bin)) +
+  geom_bar()
+
 ```

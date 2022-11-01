@@ -44,28 +44,26 @@ loans <- loans %>%
 ```
 
 ```{r q_5}
-bins <- loans %>% 
-  mutate(deviation_bin = cut(deviation, breaks=200))
-
-bins <- bins %>%
-  filter(deviation < 0.5) %>%
-  filter(deviation > -0.5)
-  
-
+bins <- loans %>%
+  mutate(lower_bound = (deviation*200000) %/% 1000)
 
 ```
 
+
+
+
 ```{r q_6}
-total <- count(bins)
+total <- as.integer(count(loans))
 
 bin_share <- bins %>%
-  group_by(deviation_bin) %>%
-  summarize(share = n())
+  group_by(lower_bound) %>%
+  summarize(share = n()/total, mean = mean(initial_interest_rate)) %>%
+  filter(abs(lower_bound) < 100)
 
 ```
 
-```{r q_6}
-ggplot(data = bins, aes(x=deviation_bin)) +
+```{r q_6a}
+ggplot(data = bins, aes(x=lower_bound)) +
   geom_bar()
 
 ```

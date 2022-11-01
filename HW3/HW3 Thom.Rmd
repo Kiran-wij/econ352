@@ -45,8 +45,9 @@ loans <- loans %>%
 
 
 ```{r 1.5}
+bins <- loans %>% mutate(deviation_bin = cut(deviation, breaks=50))
 
-
+head(bins)
 
 ```
 

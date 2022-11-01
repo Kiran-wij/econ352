@@ -11,7 +11,7 @@ library(usethis)
 ```
 
 ```{r}
-conformingloanlimits <- read_csv("~/Econ 352 HW/HW3/conformingloanlimits.csv")
+limits <- read_csv("~/Econ 352 HW/HW3/conformingloanlimits.csv")
 ```
 
 
@@ -22,7 +22,7 @@ all_llma_nc <- read_csv("~/Econ 352 HW/HW3/all_llma_nc.csv")
 
 ```{r 1-2}
 
-mortgages <- all_llma_nc %>% 
+loans <- all_llma_nc %>% 
   filter(year >= 1992 & year <= 2007,
          product_type == 10,
          original_term == 360 | original_term == 180,
@@ -30,7 +30,24 @@ mortgages <- all_llma_nc %>%
          loan_purpose %in% c(1, 2, 3, 5)
          )
 
-head(mortgages)
+head(loans)
 
 ```
+```{r q_3}
+loans <- merge(loans, limits,by="year")
+```
+
+
+```{r q_4}
+loans <- loans %>%
+  mutate(deviation = log(original_balance) - log(conformingloanlimit))
+```
+
+
+```{r 1.5}
+
+
+
+```
+
 

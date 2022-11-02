@@ -76,7 +76,7 @@ ggplot(data = graph1b, aes(x=lower_bound, y = mean, color = overlimit)) +
   geom_point() +
   geom_smooth(method = 'lm', se = FALSE, linetype = 2) +
   geom_vline(linetype = 2, xintercept = 0) +
-  labs(title = "Mean interest rate by loan size", y = "Interest rate", x = "Loan amount - conforming limit")
+  labs(title = "Mean interest rate by loan size", y = "Interest rate", x = "Loan amount - conforming limit") +
   theme(legend.position = "none")
 
 

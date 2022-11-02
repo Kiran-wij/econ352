@@ -45,10 +45,40 @@ loans <- loans %>%
 
 
 ```{r 1.5}
-bins <- loans %>% mutate(deviation_bin = cut(deviation, breaks=50))
+bins <- loans %>% mutate(deviation_bin = )
 
 head(bins)
 
 ```
 
+```{r 1.6}
+
+total <- as.integer(count(bins))
+
+bin_share <- bins %>% 
+  group_by(deviation_bin) %>% 
+  summarize(share = n()/total,
+            mean = mean(initial_interest_rate))
+
+bin_share
+
+```
+
+```{r 2-2}
+
+graph1b <- bin_share %>% 
+  mutate(overlimit = case_when(lower_bound <= 0 ~ FALSE,
+                        TRUE ~ TRUE))
+
+head(graph1b)
+
+ggplot(data = graph1b, aes(x=lower_bound, y = mean, color = overlimit)) +
+  geom_point() +
+  geom_smooth(method = 'lm', se = FALSE, linetype = 2) +
+  geom_vline(linetype = 2, xintercept = 0) +
+  labs(title = "Mean interest rate by loan size", y = "Interest rate", x = "Loan amount - conforming limit")
+  theme(legend.position = "none")
+
+
+```
 

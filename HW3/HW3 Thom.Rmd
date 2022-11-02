@@ -66,13 +66,28 @@ bin_share
 
 ```{r 2-2}
 
-graph1b <- bin_share %>% 
+# Unclear if loans have to only be from 2003. R writeup says yes, Stata writeup doesn't say anything.
+
+data1a <- loans %>%
+  mutate(lower_bound = (deviation*200000) %/% 1000) %>%
+  filter(abs(lower_bound) < 100,
+         year == 2003)
+
+total1a <- as.integer(count(data1a))
+
+grouped1a <- data1a %>%
+  group_by(lower_bound) %>%
+  summarize(share = n()/total, mean = mean(initial_interest_rate, na.rm = TRUE))
+
+# Otherwise just this
+
+graph1a <- bin_share %>% 
   mutate(overlimit = case_when(lower_bound <= 0 ~ FALSE,
                         TRUE ~ TRUE))
 
-head(graph1b)
+head(graph1a)
 
-ggplot(data = graph1b, aes(x=lower_bound, y = mean, color = overlimit)) +
+ggplot(data = graph1a, aes(x=lower_bound, y = mean, color = overlimit)) +
   geom_point() +
   geom_smooth(method = 'lm', se = FALSE, linetype = 2) +
   geom_vline(linetype = 2, xintercept = 0) +

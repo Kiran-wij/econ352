@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ```{r libraries, include=FALSE}
 library(tidyverse)
+library(bunching)
 ```
 
 
@@ -60,13 +61,17 @@ total <- as.integer(count(loans))
 bin_share <- bins %>%
   group_by(lower_bound) %>%
   summarize(share = n()/total, mean = mean(initial_interest_rate, na.rm = TRUE))
-  
-
 ```
 
 
-```{r q_6a}
-ggplot(data = bins, aes(x=lower_bound)) +
-  geom_bar()
+```{r q_2.1}
+ggplot(data = bin_share, aes(x=lower_bound, y = share)) +
+  geom_bar(stat="identity")
 
 ```
+```{r q_2.3}
+bunchit(runif(1000, 20, 40), zstar = 30, t0 = 0.03, t1 = 0.09, binwidth =
+20, bins_l = 50, bins_r = 50, poly = 13)
+```
+
+

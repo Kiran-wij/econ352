@@ -41,14 +41,19 @@ loans <- merge(loans, limits,by="year")
 
 ```{r q_4}
 loans <- loans %>%
-  mutate(deviation = log(original_balance) - log(conformingloanlimit))
+  mutate(deviation = log(original_balance) - log(conformingloanlimit)) %>% 
+  filter(!is.na(deviation)) %>% 
+  mutate(bin = floor(deviation * 100)) %>%
+  filter(abs(bin) <= 100) %>%
+  filter(!is.na(initial_interest_rate)) %>%
+  na.omit()
+
 ```
 
 ```{r q_5}
 bins <- loans %>%
   mutate(lower_bound = (deviation*200000) %/% 1000) %>%
   filter(abs(lower_bound) < 100)
-## why the 2
 
 ```
 
@@ -81,14 +86,25 @@ loans %>%
 
 
 ```{r q_2.3}
-question3 <- loans %>% mutate(
-  shifted_dev = deviation + 1
-)
+preBin = bin_share %>% 
+  filter(lower_bound < 0)
+preBinReg = lm(mean ~ lower_bound, preBin)
 
-b <- bunchit(question3$shifted_dev, zstar = 1, t0 = 0.03, t1 = 0.09, binwidth = 1, 
-        bins_l = 50, bins_r = 50, poly = 13)
+postBin = bin_share %>%
+  filter(lower_bound > 0)
+postBinReg = lm(mean ~ lower_bound, postBin) 
 
-b
+preRates = predict(preBinReg, data.frame(lower_bound=c(0)))/100
+postRates = predict(postBinReg, data.frame(lower_bound=c(0)))/100
+
+question3 <- loans%>% 
+  mutate(shifted_dev = deviation + 1)
+
+options(warn=-1)
+bunchit(question3$shifted_dev, zstar=1, t0=preRates, t1=postRates, binwidth = 0.01, bins_l=200, bins_r=200, poly=13)
+        
+#Error message when notch=T included
+
 ```
 
 

@@ -48,10 +48,9 @@ loans <- loans %>%
 bins <- loans %>%
   mutate(lower_bound = (deviation*200000) %/% 1000) %>%
   filter(abs(lower_bound) < 100)
-
+## why the 2
 
 ```
-
 
 
 
@@ -61,17 +60,35 @@ total <- as.integer(count(loans))
 bin_share <- bins %>%
   group_by(lower_bound) %>%
   summarize(share = n()/total, mean = mean(initial_interest_rate, na.rm = TRUE))
+
+bin_share
 ```
 
 
 ```{r q_2.1}
 ggplot(data = bin_share, aes(x=lower_bound, y = share)) +
-  geom_bar(stat="identity")
-
+  geom_bar(stat="identity") +
+  labs(title = "Loan Size Density", y = "Fraction of Loans", 
+       x = "Deviation from CLL")
+#check % 2X
 ```
+```{r q_2.2}
+loans %>%
+  filter(abs(original_balance - conformingloanlimit) < 100000) %>%
+  mutate(lower_bound = (deviation*200000) %/% 1000) %>%
+  head()
+```
+
+
 ```{r q_2.3}
-bunchit(runif(1000, 20, 40), zstar = 30, t0 = 0.03, t1 = 0.09, binwidth =
-20, bins_l = 50, bins_r = 50, poly = 13)
+question3 <- loans %>% mutate(
+  shifted_dev = deviation + 1
+)
+
+b <- bunchit(question3$shifted_dev, zstar = 1, t0 = 0.03, t1 = 0.09, binwidth = 1, 
+        bins_l = 50, bins_r = 50, poly = 13)
+
+b
 ```
 
 

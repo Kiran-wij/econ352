@@ -15,7 +15,7 @@ l_2000g <- l_2000 %>%
     !is.na(zero_balance_date) ~ 1,
     is.na(zero_balance_date) ~ 0)) %>%
   group_by(rate_gap) %>%
-  summarize(pct = n()/z, prob = sum(pre_pay)/n())
+  summarize(pct = n()/z2, prob = sum(pre_pay)/n())
 
 ```
 

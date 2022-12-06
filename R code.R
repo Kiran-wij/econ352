@@ -1,4 +1,4 @@
-install.packages("readstata13")
+
 require(dplyr)
 
 require(readstata13)
@@ -7,11 +7,11 @@ require(bunching)
 
 
 
-setwd("Dropbox/Venetia/bunching")
 
-loans = read.csv("all_llma_nc.csv")
 
-loanLimits = read.dta13("conformingloanlimits.dta")
+loans = read_csv("~/Econ 352/HW2/HW3/all_llma_nc.csv")
+
+loanLimits = read_csv("~/Econ 352/HW2/HW3/conformingloanlimits.csv")
 
 
 

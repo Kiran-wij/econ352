@@ -8,6 +8,7 @@ date: "2022-11-01"
 knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
 library(usethis)
+library(bunching)
 ```
 
 ```{r}
@@ -40,7 +41,12 @@ loans <- merge(loans, limits,by="year")
 
 ```{r q_4}
 loans <- loans %>%
-  mutate(deviation = log(original_balance) - log(conformingloanlimit))
+  mutate(deviation = log(original_balance) - log(conformingloanlimit)) %>% 
+  filter(!is.na(deviation)) %>% 
+  mutate(bin = floor(deviation * 100)) %>%
+  filter(abs(bin) <= 100) %>%
+  filter(!is.na(initial_interest_rate)) %>%
+  na.omit()
 ```
 
 
@@ -95,5 +101,17 @@ ggplot(data = graph1a, aes(x=lower_bound, y = mean, color = overlimit)) +
   theme(legend.position = "none")
 
 
+```
+```{r}
+question3 <- loans %>% mutate(
+  shifted_dev = deviation + 1
+)
+```
+
+```{r}
+# Example 1: Kink with integration constraint correction
+kink1 <- bunchit(z_vector = as.numeric(question3$shifted_dev), zstar = 1, binwidth = 50,
+bins_l = 20, bins_r = 20, poly = 4, t0 = 0, t1 = .2,
+p_b = TRUE, seed = 1)
 ```
 

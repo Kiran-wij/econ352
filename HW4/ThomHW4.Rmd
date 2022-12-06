@@ -28,3 +28,23 @@ ggplot(data = l_2000g, aes(x = rate_gap, y = pct)) +
 
 ```
 
+```{r}
+z2 <- nrow(l_2007)
+
+l_2007g <- l_2007 %>%
+  mutate(rate_gap = round((current_interest_rate - mortgagerate_30yr), 1)) %>%
+  mutate(pre_pay = case_when(
+    !is.na(zero_balance_date) ~ 1,
+    is.na(zero_balance_date) ~ 0)) %>%
+  group_by(rate_gap) %>%
+  summarize(pct = n()/z, prob = sum(pre_pay)/n())
+```
+
+```{r}
+ggplot(data = l_2007g, aes(x = rate_gap, y = pct)) +
+  geom_smooth() + 
+  geom_smooth(aes(y = prob), color = "red") +
+  scale_y_continuous(sec.axis = dup_axis()) +
+  labs(title = "Distribution (Blue) vs Hazard Rates (Red) by Rate Gap", x = "Rate Gap", y = "Percentage of Loans")
+```
+

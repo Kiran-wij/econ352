@@ -1,0 +1,39 @@
+---
+title: "HW4 Markdown"
+output: beamer_presentation
+date: "2022-12-05"
+---
+
+```{r libraries, include=FALSE}
+library(tidyverse)
+library(bunching)
+```
+
+
+```{r data}
+l_2000 <- read_csv("~/Econ 352/HW2/HW4/SFLP_performance_2000.csv")
+l_2007 <- read_csv("~/Econ 352/HW2/HW4/SFLP_performance_2007.csv")
+```
+
+
+```{r graph}
+z <- nrow(l_2000)
+
+l_2000g <- l_2000 %>%
+  mutate(rate_gap = round((current_interest_rate - mortgagerate_30yr), 1)) %>%
+  mutate(pre_pay = case_when(
+    !is.na(zero_balance_date) ~ 1,
+    is.na(zero_balance_date) ~ 0)) %>%
+  group_by(rate_gap) %>%
+  summarize(pct = n()/z, prob = sum(pre_pay)/n())
+```
+
+```{r graph}
+ggplot(data = l_2000g, aes(x = rate_gap, y = pct)) +
+  geom_point()
+
+```
+
+
+
+

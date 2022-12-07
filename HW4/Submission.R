@@ -1,22 +1,22 @@
 ---
-title: "HW4 Markdown"
+  title: "HW4 Markdown"
 output: beamer_presentation
 date: "2022-12-05"
 ---
+  
 
-```{r libraries, include=FALSE}
 library(tidyverse)
 library(bunching)
-```
 
 
-```{r data}
+
+
 l_2000 <- read_csv("~/Econ 352/HW2/HW4/SFLP_performance_2000.csv")
 l_2007 <- read_csv("~/Econ 352/HW2/HW4/SFLP_performance_2007.csv")
-```
 
 
-```{r graph}
+
+
 z <- nrow(l_2000)
 
 l_2000g <- l_2000 %>%
@@ -26,21 +26,22 @@ l_2000g <- l_2000 %>%
     is.na(zero_balance_date) ~ 0)) %>%
   group_by(rate_gap) %>%
   summarize(pct = n()/z, prob = sum(pre_pay)/n())
-```
 
-```{r graph}
+
+
 ggplot(data = l_2000g, aes(x = rate_gap, y = pct)) +
   geom_smooth() + 
   geom_smooth(aes(y = prob), color = "red") +
   scale_y_continuous(sec.axis = dup_axis()) +
   labs(title = "Distribution (Blue) vs Hazard Rates (Red) by Rate Gap", x = "Rate Gap", y = "Percentage of Loans")
-```
-```{r pre shift}
+
+
+
 # Here we filter out gaps > 2.0 because when rates fall these gaps go to > 3.0
 # and we don't have probabilities for when gap > 3.0 so for a better comparison
 # we only look at mortgages for which we know the before/ after probabilities
 
-#Rates fall
+#Rates fall baseline
 l_2000g %>%
   filter(rate_gap <= 2.0) %>% 
   mutate(product = pct*prob) %>%
@@ -49,14 +50,14 @@ l_2000g %>%
 # Here we do the same but filter out gaps < -0.5 because with the rate rise the
 # gaps would rise to >-1.5% which we simmilarly dont have probabilities for
 
-#Rates rise
+#Rates rise baseline
 l_2000g %>%
   filter(rate_gap >= -0.5) %>% 
   mutate(product = pct*prob) %>%
   summarize(total_prob = sum(product))
 
-```
-```{r rates fall}
+
+# Rates fall
 probs <- l_2000g %>%
   select(rate_gap, prob)
 
@@ -71,8 +72,8 @@ dfm %>%
   mutate(product = pct*prob) %>%
   summarize(total_prob = sum(product))
 
-```
-```{r rates rise}
+
+# Rates rise
 probs2 <- l_2000g %>%
   select(rate_gap, prob)
 
@@ -87,10 +88,9 @@ dfm2 %>%
   mutate(product = pct*prob) %>%
   summarize(total_prob = sum(product))
 
-```
 
 
-```{r 2007}
+
 z2 <- nrow(l_2007)
 
 l_2007g <- l_2007 %>%
@@ -100,16 +100,16 @@ l_2007g <- l_2007 %>%
     is.na(zero_balance_date) ~ 0)) %>%
   group_by(rate_gap) %>%
   summarize(pct = n()/z2, prob = sum(pre_pay)/n())
-```
 
-```{r}
+
+
 ggplot(data = l_2007g, aes(x = rate_gap, y = pct)) +
   geom_smooth() + 
   geom_smooth(aes(y = prob), color = "red") +
   scale_y_continuous(sec.axis = dup_axis()) +
   labs(title = "Distribution (Blue) vs Hazard Rates (Red) by Rate Gap", 
        x = "Rate Gap", y = "Percentage of Loans")
-```
+
 
 
 
